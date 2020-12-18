@@ -225,20 +225,20 @@ namespace WinFormBreaker.Controls {
         #endregion
 
         private System.Windows.Forms.Timer tmrUpdate;
-        private System.Windows.Forms.Panel pnlGameArea;
         private GameScrollBar scbBar;
+        private System.Windows.Forms.Panel pnlGameArea;
+        private ProgressBarBlock progressBarBlock1;
+        private CheckBoxBlock checkBoxBlock1;
+        private NumericUpDownBlock numericUpDownBlock2;
+        private NumericUpDownBlock numericUpDownBlock1;
+        private TextBoxBlock textBoxBlock2;
+        private TextBoxBlock textBoxBlock1;
+        private ButtonBlock buttonBlock3;
+        private ButtonBlock buttonBlock2;
+        private ButtonBlock buttonBlock1;
         private LabelBlock labelBlock4;
         private LabelBlock labelBlock3;
         private LabelBlock labelBlock2;
         private LabelBlock labelBlock1;
-        private ButtonBlock buttonBlock3;
-        private ButtonBlock buttonBlock2;
-        private ButtonBlock buttonBlock1;
-        private TextBoxBlock textBoxBlock1;
-        private TextBoxBlock textBoxBlock2;
-        private NumericUpDownBlock numericUpDownBlock2;
-        private NumericUpDownBlock numericUpDownBlock1;
-        private CheckBoxBlock checkBoxBlock1;
-        private ProgressBarBlock progressBarBlock1;
     }
 }

@@ -45,13 +45,13 @@ namespace WinFormBreaker.Controls {
         /// <param name="point">ヒットした座標</param>
         /// <param name="power">ボールパワー</param>
         /// <returns>ブロックの反射情報</returns>
-        public ReflectionInfo Attack(Point point, int power) {
+        public ReflectionInfo Attack(IBall ball, Point point) {
             // 数値入力は値が0になったら破壊される。
             // 破壊されたらボールは反射する
             var rectangle = new Rectangle(this.Location, this.ClientSize);
-            var info = ReflectionHelper.CalculateReflection(rectangle, point);
+            var info = ReflectionHelper.CalculateReflection(ball, this, rectangle, point);
             // ボールパワー分数値を減算する
-            this.Value -= power;
+            this.Value -= ball.Power;
             return info;
         }
 

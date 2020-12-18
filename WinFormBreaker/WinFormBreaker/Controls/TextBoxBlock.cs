@@ -74,12 +74,12 @@ namespace WinFormBreaker.Controls {
         /// <param name="point">ヒットした座標</param>
         /// <param name="power">ボールパワー</param>
         /// <returns>ブロックの反射情報</returns>
-        public ReflectionInfo Attack(Point point, int power) {
+        public ReflectionInfo Attack(IBall ball, Point point) {
             // テキストボックスは当たるたびに文字列が追加されていく
             // ボールは反射する
             var rectangle = new Rectangle(this.Location, this.ClientSize);
-            var info = ReflectionHelper.CalculateReflection(rectangle, point);
-            this.ChangeText(power);
+            var info = ReflectionHelper.CalculateReflection(ball, this, rectangle, point);
+            this.ChangeText(ball.Power);
             return info;
         }
 

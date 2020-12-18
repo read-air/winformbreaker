@@ -16,6 +16,9 @@ namespace WinFormBreaker.Controls {
         /// </summary>
         public GameScrollBar() {
             this.LastValue = -1;
+            this.LeftButtonObject = new object();
+            this.RightButtonObject = new object();
+            this.CenterButtonObject = new object();
         }
         #endregion
 
@@ -58,6 +61,30 @@ namespace WinFormBreaker.Controls {
             get {
                 return BUTTON_SIZE;
             }
+        }
+
+        /// <summary>
+        /// 左ボタンヒット確認用オブジェクト
+        /// </summary>
+        public object LeftButtonObject {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 右ボタンヒット確認用オブジェクト
+        /// </summary>
+        public object RightButtonObject {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 中央バーヒット確認用オブジェクト
+        /// </summary>
+        public object CenterButtonObject {
+            get;
+            private set;
         }
         #endregion
 

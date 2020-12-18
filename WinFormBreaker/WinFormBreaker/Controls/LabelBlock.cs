@@ -46,7 +46,7 @@ namespace WinFormBreaker.Controls {
         /// <param name="point">ヒットした座標</param>
         /// <param name="power">ボールパワー</param>
         /// <returns>ブロックの反射情報</returns>
-        public ReflectionInfo Attack(Point point, int power) {
+        public ReflectionInfo Attack(IBall ball, Point point) {
             // ラベルはパワーにかかわらず破壊される。
             // 破壊されても貫通する。
             var info = new ReflectionInfo();

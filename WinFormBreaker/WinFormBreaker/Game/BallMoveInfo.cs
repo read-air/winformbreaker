@@ -10,6 +10,7 @@ namespace WinFormBreaker.Game {
     /// <summary>
     /// ボール移動情報
     /// </summary>
+    [DebuggerDisplay("SpeedX:{SpeedX} SpeedY:{SpeedY} Angle:{AngleDeg}")]
     public class BallMoveInfo {
         /// <summary>
         /// コンストラクタ
@@ -36,6 +37,43 @@ namespace WinFormBreaker.Game {
         public List<BallMove> BallMoves {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// X方向の現在のスピード
+        /// </summary>
+        public double SpeedX {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Y方向の現在のスピード
+        /// </summary>
+        public double SpeedY {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 方向の角度を取得する
+        /// </summary>
+        /// <returns>方向の角度(rad)</returns>
+        public double GetDirectionAngle() {
+            double angle = 0.0;
+            if(this.SpeedX != 0.0) {
+                angle = Math.Atan2(-this.SpeedY, this.SpeedX);
+            }
+            return angle;
+        }
+
+        /// <summary>
+        /// 角度(deg)
+        /// </summary>
+        public double AngleDeg {
+            get {
+                return this.GetDirectionAngle() * 180.0 / Math.PI;
+            }
         }
     }
 

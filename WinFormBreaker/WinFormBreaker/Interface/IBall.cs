@@ -36,6 +36,14 @@ namespace WinFormBreaker.Interface {
         }
 
         /// <summary>
+        /// 最後に命中したアイテム
+        /// </summary>
+        object LastHitObject {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// ボールのパワー
         /// </summary>
         int Power {
@@ -58,6 +66,7 @@ namespace WinFormBreaker.Interface {
             set;
         }
 
+#if false
         /// <summary>
         /// ボールの領域
         /// </summary>
@@ -71,6 +80,7 @@ namespace WinFormBreaker.Interface {
         Rectangle RegionRectangle {
             get;
         }
+#endif
 
         /// <summary>
         /// 現在の進行方向

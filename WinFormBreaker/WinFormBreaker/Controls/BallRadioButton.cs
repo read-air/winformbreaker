@@ -41,7 +41,7 @@ namespace WinFormBreaker.Controls {
         /// <summary>
         /// 移動の分割数
         /// </summary>
-        private const int MoveDivide = 10;
+        private const int MoveDivide = 20;
         /// <summary>
         /// 係数
         /// </summary>
@@ -103,8 +103,7 @@ namespace WinFormBreaker.Controls {
                 this.speedX = value;
                 if (this.speedX > MaxSpeedX) {
                     this.speedX = MaxSpeedX;
-                }
-                else if(this.speedX < -MaxSpeedX) {
+                } else if (this.speedX < -MaxSpeedX) {
                     this.speedX = -MaxSpeedX;
                 }
             }
@@ -121,8 +120,7 @@ namespace WinFormBreaker.Controls {
                 this.speedY = value;
                 if (this.speedY > MaxSpeedY) {
                     this.speedY = MaxSpeedY;
-                }
-                else if(this.speedY < -MaxSpeedY) {
+                } else if (this.speedY < -MaxSpeedY) {
                     this.speedY = -MaxSpeedY;
                 }
             }
@@ -170,9 +168,9 @@ namespace WinFormBreaker.Controls {
                     direction |= Direction.Left;
                 }
                 if (this.SpeedY > 0) {
-                    direction |= Direction.Top;
-                } else {
                     direction |= Direction.Bottom;
+                } else {
+                    direction |= Direction.Top;
                 }
                 return direction;
             }
@@ -185,27 +183,15 @@ namespace WinFormBreaker.Controls {
             get;
             private set;
         }
-        
+
         /// <summary>
-        /// 点群を取得します。
+        /// 最後に命中したアイテム
         /// </summary>
-        /// <returns>点群</returns>
-        public IEnumerable<Point> GetPoints() {
-            int centerX = this.BallLocation.X;
-            int centerY = this.BallLocation.Y;
-            int length = this.BallSize.Width / 2;
-            int diff = (int)(length / 2 * Coefficient);
-            return new List<Point>() {
-                new Point(centerX - length, centerY),
-                new Point(centerX + length, centerY),
-                new Point(centerX, centerY - length),
-                new Point(centerX, centerY + length),
-                new Point(centerX + diff, centerY + diff),
-                new Point(centerX + diff, centerY - diff),
-                new Point(centerX - diff, centerY + diff),
-                new Point(centerX - diff, centerY - diff),
-            };
+        public object LastHitObject {
+            get;
+            set;
         }
+
         #endregion
 
         #region 外部メソッド
@@ -249,7 +235,7 @@ namespace WinFormBreaker.Controls {
             // 位置を調整する
             int setLocationX = this.AdjustLocationX(locationX, maxWidth);
             int setLocationY = this.AdjustLocationY(locationY, maxHeight);
-            var info = this.CalculatePointList(location.X, location.Y, setLocationX, setLocationY);
+            var info = this.CalculateMoveInfo(location.X, location.Y, setLocationX, setLocationY);
             this.MoveInfo = info;
         }
 
@@ -258,7 +244,7 @@ namespace WinFormBreaker.Controls {
         /// </summary>
         /// <param name="point">移動先</param>
         public void MoveTo(Point point) {
-            Debug.WriteLine($"MoveTo:({point.X},{point.Y})");
+            // Debug.WriteLine($"MoveTo:({point.X},{point.Y})");
             // 座標を記憶
             this.BallLocation = point;
             // 座標を設定
@@ -355,7 +341,6 @@ namespace WinFormBreaker.Controls {
         private int AdjustLocationY(double locationY, int maxHeight) {
             if (locationY > maxHeight && this.SpeedY > 0) {
                 // バーにぶつかったら係数を加算して反発
-                this.SpeedY = -this.SpeedY * Restitution;
             } else if (locationY < 0 && this.SpeedY < 0) {
                 // 天井にぶつかったらそのまま反発
                 this.SpeedY = -this.SpeedY;
@@ -378,26 +363,40 @@ namespace WinFormBreaker.Controls {
         /// <param name="toX">移動先のX座標</param>
         /// <param name="toY">移動先のY座標</param>
         /// <returns>リスト</returns>
-        private BallMoveInfo CalculatePointList(int fromX, int fromY, int toX, int toY) {
+        private BallMoveInfo CalculateMoveInfo(int fromX, int fromY, int toX, int toY) {
             // 中心座標のリストを計算する
             var centerList = new List<(double X, double Y)>();
             int width = toX - fromX, height = toY - fromY;
-            for(int index = 0; index <= MoveDivide; index++) {
-                double ratio = (double) index / MoveDivide;
+            for (int index = 0; index <= MoveDivide; index++) {
+                double ratio = (double)index / MoveDivide;
                 centerList.Add((fromX + width * ratio, fromY + height * ratio));
             }
             // 角度を計算
-            double angle = Math.Atan2(-height, width);
-            double cos = Math.Cos(angle);
-            double sin = Math.Sin(angle);
+            double angle = Math.Atan2(height, width);
+            double cos0 = Math.Cos(angle);
+            double sin0 = Math.Sin(angle);
+            // ±30°の点を追加する
+            double angleP = angle + Math.PI / 6;
+            double cosP = Math.Cos(angleP);
+            double sinP = Math.Sin(angleP);
+            double angleN = angle - Math.PI / 6;
+            double cosN = Math.Cos(angleN);
+            double sinN = Math.Sin(angleN);
             // リストを作成
             double ballHalfWidth = this.BallSize.Width / 2.0;
             double ballHalfHeight = this.BallSize.Height / 2.0;
-            var info = new BallMoveInfo();
+            var info = new BallMoveInfo() {
+                SpeedX = this.SpeedX,
+                SpeedY = this.SpeedY,
+            };
             foreach (var (x, y) in centerList) {
                 var ballCenter = new Point((int)x, (int)y);
-                var hitPoint = new Point((int)(x + ballHalfWidth * cos), (int)(y - ballHalfHeight * sin));
+                var hitPoint = new Point((int)(x + ballHalfWidth * cos0), (int)(y - ballHalfHeight * sin0));
                 info.Add(ballCenter, hitPoint);
+                var hitPointP = new Point((int)(x + ballHalfWidth * cosP), (int)(y - ballHalfHeight * sinP));
+                info.Add(ballCenter, hitPointP);
+                var hitPointN = new Point((int)(x + ballHalfWidth * cosN), (int)(y - ballHalfHeight * sinN));
+                info.Add(ballCenter, hitPointN);
             }
             return info;
         }

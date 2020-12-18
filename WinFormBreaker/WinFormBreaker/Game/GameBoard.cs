@@ -129,6 +129,7 @@ namespace WinFormBreaker.Game {
                         moved = true;
                     }
                 }
+#if false
                 if (!moved) {
                     bool fall = this.CheckFall(this.ScrollBar, ball);
                     if (fall) {
@@ -136,6 +137,7 @@ namespace WinFormBreaker.Game {
                         moved = true;
                     }
                 }
+#endif
                 if (!moved) {
                     var last = ball.MoveInfo.BallMoves.LastOrDefault();
                     if (last != null) {
@@ -144,7 +146,7 @@ namespace WinFormBreaker.Game {
                 }
             }
             // 落下したボールを削除する
-            foreach(var fallBall in fallBalls) {
+            foreach (var fallBall in fallBalls) {
                 this.RemoveBall(fallBall);
             }
         }
@@ -166,11 +168,12 @@ namespace WinFormBreaker.Game {
                 // 領域が当たっているなら、各ブロックの当たり判定を行う
                 foreach (var block in this.Blocks) {
                     bool regionHit = block.Region.IsVisible(point.HitCheck);
-                    if (regionHit) {
+                    if (regionHit && ball.LastHitObject != block) {
                         // 当たったブロックが見つかったら、ブロックに攻撃
-                        var reflect = block.Attack(point.HitCheck, ball.Power);
+                        var reflect = block.Attack(ball, point.HitCheck);
                         Debug.WriteLine($"Hit:({point.HitCheck.X},{point.HitCheck.Y} Center:({point.Center.X},{point.Center.Y}), Reflect:{reflect.Direction}");
                         // ボールの移動と反射を行う
+                        ball.LastHitObject = block;
                         ball.MoveTo(point.Center);
                         ball.Reflect(reflect);
                         hit = true;
@@ -304,62 +307,76 @@ namespace WinFormBreaker.Game {
         /// <returns>反射情報</returns>
         private ReflectionInfo CheckBarReflection(Rectangle area, GameScrollBar bar, IBall ball) {
             ReflectionInfo info = null;
-            var rect = ball.RegionRectangle;
-            int ballBottom = rect.Bottom;
             int barTop = bar.Top;
-            // 地面にぶつかったかチェック
-            if (ballBottom >= barTop) {
-                // バーが範囲内かチェック
-                int barLeft = bar.BarLeft, barRight = bar.BarRight;
-                int ballCenter = (rect.Left + rect.Right) / 2;
-                if (ballCenter >= barLeft && ballCenter <= barLeft + SIDE_WIDTH) {
-                    Debug.WriteLine("左端");
-                    // 左端で反射したら左上に吹っ飛ぶ
-                    info = new ReflectionInfo() {
-                        ReflectionType = ReflectionType.Constant,
-                        CoefficientX = 1.0,
-                        CoefficientY = 1.0,
-                        Direction = Direction.Top | Direction.Left,
-                    };
-                } else if (ballCenter >= barRight - SIDE_WIDTH && ballCenter <= barRight) {
-                    Debug.WriteLine("右端");
-                    // 右端で反射したら右上に吹っ飛ぶ
-                    info = new ReflectionInfo() {
-                        ReflectionType = ReflectionType.Constant,
-                        CoefficientX = 1.0,
-                        CoefficientY = 1.0,
-                        Direction = Direction.Top | Direction.Right,
-                    };
-                } else if (ballCenter >= barLeft && ballCenter <= barRight) {
-                    Debug.WriteLine("中央");
-                    // バーの中央部にあったらそのまま跳ね返る
-                    info = new ReflectionInfo() {
-                        ReflectionType = ReflectionType.Multiply,
-                        CoefficientX = 1.0,
-                        CoefficientY = 1.0,
-                        Direction = Direction.Top,
-                    };
-                } else if (ballCenter < bar.ButtonWidth) {
-                    Debug.WriteLine("左ボタン");
-                    // 左端のボタンに当たった場合、右上に吹っ飛ぶ
-                    info = new ReflectionInfo() {
-                        ReflectionType = ReflectionType.Multiply,
-                        CoefficientX = 1.2,
-                        CoefficientY = 1.2,
-                        Direction = Direction.Top | Direction.Right,
-                    };
-                } else if (ballCenter > area.Width - bar.ButtonWidth) {
-                    Debug.WriteLine("右ボタン");
-                    // 右端のボタンに当たった場合、左上に吹っ飛ぶ
-                    info = new ReflectionInfo() {
-                        ReflectionType = ReflectionType.Multiply,
-                        CoefficientX = 1.2,
-                        CoefficientY = 1.2,
-                        Direction = Direction.Top | Direction.Left,
-                    };
+            foreach (var point in ball.MoveInfo.BallMoves) {
+                bool hit = true;
+                int ballY = point.HitCheck.Y;
+                // 地面にぶつかったかチェック
+                if (ballY >= barTop) {
+                    // バーが範囲内かチェック
+                    int barLeft = bar.BarLeft, barRight = bar.BarRight;
+                    int ballX = point.HitCheck.X;
+                    if (ballX >= barLeft && ballX <= barLeft + SIDE_WIDTH && ball.LastHitObject != bar.CenterButtonObject) {
+                        Debug.WriteLine("左端");
+                        // 左端で反射したら左上に吹っ飛ぶ
+                        info = new ReflectionInfo() {
+                            ReflectionType = ReflectionType.Constant,
+                            CoefficientX = 1.0,
+                            CoefficientY = 1.0,
+                            Direction = Direction.Top | Direction.Left,
+                        };
+                        ball.LastHitObject = bar.CenterButtonObject;
+                    } else if (ballX >= barRight - SIDE_WIDTH && ballX <= barRight && ball.LastHitObject != bar.CenterButtonObject) {
+                        Debug.WriteLine("右端");
+                        // 右端で反射したら右上に吹っ飛ぶ
+                        info = new ReflectionInfo() {
+                            ReflectionType = ReflectionType.Constant,
+                            CoefficientX = 1.0,
+                            CoefficientY = 1.0,
+                            Direction = Direction.Top | Direction.Right,
+                        };
+                        ball.LastHitObject = bar.CenterButtonObject;
+                    } else if (ballX >= barLeft && ballX <= barRight && ball.LastHitObject != bar.CenterButtonObject) {
+                        Debug.WriteLine("中央");
+                        // バーの中央部にあったらそのまま跳ね返る
+                        info = new ReflectionInfo() {
+                            ReflectionType = ReflectionType.Multiply,
+                            CoefficientX = 1.0,
+                            CoefficientY = 1.0,
+                            Direction = Direction.Top,
+                        };
+                        ball.LastHitObject = bar.CenterButtonObject;
+                    } else if (ballX < bar.ButtonWidth && ball.LastHitObject != bar.LeftButtonObject) {
+                        Debug.WriteLine("左ボタン");
+                        // 左端のボタンに当たった場合、右上に吹っ飛ぶ
+                        info = new ReflectionInfo() {
+                            ReflectionType = ReflectionType.Multiply,
+                            CoefficientX = 1.2,
+                            CoefficientY = 1.2,
+                            Direction = Direction.Top | Direction.Right,
+                        };
+                        ball.LastHitObject = bar.LeftButtonObject;
+                    } else if (ballX > area.Width - bar.ButtonWidth && ball.LastHitObject != bar.RightButtonObject) {
+                        Debug.WriteLine("右ボタン");
+                        // 右端のボタンに当たった場合、左上に吹っ飛ぶ
+                        info = new ReflectionInfo() {
+                            ReflectionType = ReflectionType.Multiply,
+                            CoefficientX = 1.2,
+                            CoefficientY = 1.2,
+                            Direction = Direction.Top | Direction.Left,
+                        };
+                        ball.LastHitObject = bar.RightButtonObject;
+                    } else {
+                        // DO NOTHING
+                        info = new ReflectionInfo();
+                        hit = false;
+                    }
                 } else {
-                    // DO NOTHING
-                    info = new ReflectionInfo();
+                    hit = false;
+                }
+                if (hit) {
+                    ball.MoveTo(point.Center);
+                    break;
                 }
             }
             return info;
@@ -372,10 +389,17 @@ namespace WinFormBreaker.Game {
         /// <param name="ball">ボール</param>
         /// <returns>true:落下判定座標より下にいる</returns>
         private bool CheckFall(GameScrollBar bar, IBall ball) {
-            var rect = ball.RegionRectangle;
-            int ballBottom = rect.Bottom;
-            int barTop = bar.Top;
-            return ballBottom >= barTop;
+            bool fall = false;
+            var moves = ball.MoveInfo.BallMoves;
+            if (moves.Any()) {
+                int barLeft = bar.BarLeft, barRight = bar.BarRight;
+                int bottomY = moves.Max(p => p.HitCheck.Y);
+                int leftX = moves.Min(p => p.HitCheck.X);
+                int rightX = moves.Max(p => p.HitCheck.X);
+                int fallY = bar.Bottom;
+                fall = bottomY >= fallY && ball.SpeedY > 0;
+            }
+            return fall;
         }
         #endregion
     }

@@ -33,9 +33,8 @@ namespace WinFormBreaker.Interface {
         /// このブロックを壊す。
         /// </summary>
         /// <param name="point">座標</param>
-        /// <param name="power">ボールパワー</param>
         /// <returns>ブロックの反射情報</returns>
-        ReflectionInfo Attack(Point point, int power);
+        ReflectionInfo Attack(IBall ball, Point point);
         #endregion
     }
 }
