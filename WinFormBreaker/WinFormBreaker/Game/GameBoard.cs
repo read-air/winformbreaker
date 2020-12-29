@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WinFormBreaker.Controls;
 using WinFormBreaker.Interface;
@@ -32,23 +30,22 @@ namespace WinFormBreaker.Game {
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public GameBoard(Panel panel, GameScrollBar scrollBar, Timer timer) {
-            this.BasePanel = panel ?? throw new ArgumentNullException(nameof(panel));
+        public GameBoard(UserControl control, GameScrollBar scrollBar, Timer timer) {
+            this.BaseControl = control ?? throw new ArgumentNullException(nameof(control));
             this.ScrollBar = scrollBar ?? throw new ArgumentNullException(nameof(scrollBar));
             this.GameTimer = timer ?? throw new ArgumentNullException(nameof(timer));
-            this.BlockRegion = new Region();
             this.Blocks = new List<IBlock>();
             this.Balls = new List<IBall>();
             this.GameInfo = new GameInfo();
-            this.CorrectBlocksFromPanel(panel);
+            this.CorrectBlocksFromControl(control);
         }
         #endregion
 
         #region 外部プロパティ
         /// <summary>
-        /// ベースとなるパネル
+        /// ベースとなるコントロール
         /// </summary>
-        public Panel BasePanel {
+        public UserControl BaseControl {
             get;
             private set;
         }
@@ -65,14 +62,6 @@ namespace WinFormBreaker.Game {
         /// ゲームを動作させるタイマー
         /// </summary>
         public Timer GameTimer {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// ブロック全体の領域
-        /// </summary>
-        public Region BlockRegion {
             get;
             private set;
         }
@@ -114,30 +103,57 @@ namespace WinFormBreaker.Game {
                 if (!ball.IsAvailable) {
                     continue;
                 }
+                // 直前にヒットしたオブジェクトからの抜け出し判定
+                if (ball.LastHitObject != null) {
+                    bool slippedOut = this.CheckSlipOut(this.ScrollBar, ball);
+                    if (slippedOut) {
+                        ball.LastHitObject = null;
+                    }
+                }
                 // ボールの移動先を取得する
                 ball.MoveNext();
+#if true
+                var ballobj = (ball as BallRadioButton);
+                var location = ballobj.Location;
+                var ballFirst = ball.MoveInfo.BallMoves.First();
+                var ballLast = ball.MoveInfo.BallMoves.Last();
+                Debug.WriteLine($"({location.X},{location.Y}) FirstHitCheck:({ballFirst.HitCheck.X},{ballFirst.HitCheck.Y}) LastHitCheck({ballLast.HitCheck.X},{ballLast.HitCheck.Y})");
+#endif
                 bool moved = false;
+                // ブロックヒット判定
                 if (!moved) {
                     bool hitBlock = this.CheckBlockHit(ball);
                     if (hitBlock) {
                         moved = true;
                     }
                 }
+                // バーヒット判定
                 if (!moved) {
-                    bool hitBall = this.CheckBarHit(ball);
-                    if (hitBall) {
+                    bool hitBar = this.CheckBarHit(ball);
+                    if (hitBar) {
                         moved = true;
                     }
                 }
-#if false
+                // 壁ヒット判定
+                if (!moved) {
+                    bool hitWall = this.CheckWallHit(ball);
+                    if (hitWall) {
+                        moved = true;
+                    }
+                }
+                // 落下判定
                 if (!moved) {
                     bool fall = this.CheckFall(this.ScrollBar, ball);
                     if (fall) {
+#if false
                         fallBalls.Add(ball);
                         moved = true;
+#else
+                        Debug.WriteLine("落下判定あり");
+#endif
                     }
                 }
-#endif
+                // 移動判定
                 if (!moved) {
                     var last = ball.MoveInfo.BallMoves.LastOrDefault();
                     if (last != null) {
@@ -152,6 +168,41 @@ namespace WinFormBreaker.Game {
         }
 
         /// <summary>
+        /// ボールのすり抜け判定
+        /// </summary>
+        /// <returns>すり抜け</returns>
+        private bool CheckSlipOut(GameScrollBar bar, IBall ball) {
+            var points = ball.MoveInfo.BallPoints;
+            var lastHitObject = ball.LastHitObject;
+            bool slippedOut = true;
+            if (lastHitObject is IBlock block) {
+                foreach (var point in points) {
+                    // ブロックの当たり判定からすべて外れていることを確認する
+                    bool regionHit = block.CheckHit(point);
+                    if (regionHit) {
+                        slippedOut = false;
+                        break;
+                    }
+                }
+            } else {
+                if (lastHitObject == bar.LeftButtonObject) {
+                    // 左バーの当たり判定からすべて外れていることを確認する
+                    foreach (var point in points) {
+                    }
+                } else if (lastHitObject == bar.CenterButtonObject) {
+                    // 中央バーの当たり判定からすべて外れていることを確認する
+                    foreach (var point in points) {
+                    }
+                } else if (lastHitObject == bar.RightButtonObject) {
+                    // 右バーの当たり判定からすべて外れていることを確認する
+                    foreach (var point in points) {
+                    }
+                }
+            }
+            return slippedOut;
+        }
+
+        /// <summary>
         /// ボールの当たり判定を行う
         /// </summary>
         /// <param name="ball">ボール</param>
@@ -160,18 +211,13 @@ namespace WinFormBreaker.Game {
             // ボールの当たり判定を行う
             var moves = ball.MoveInfo.BallMoves;
             foreach (var point in moves) {
-                // 領域チェックを行う
-                bool blockHit = this.BlockRegion.IsVisible(point.HitCheck);
-                if (!blockHit) {
-                    continue;
-                }
                 // 領域が当たっているなら、各ブロックの当たり判定を行う
                 foreach (var block in this.Blocks) {
-                    bool regionHit = block.Region.IsVisible(point.HitCheck);
+                    bool regionHit = block.CheckHit(point.HitCheck);
                     if (regionHit && ball.LastHitObject != block) {
                         // 当たったブロックが見つかったら、ブロックに攻撃
                         var reflect = block.Attack(ball, point.HitCheck);
-                        Debug.WriteLine($"Hit:({point.HitCheck.X},{point.HitCheck.Y} Center:({point.Center.X},{point.Center.Y}), Reflect:{reflect.Direction}");
+                        Debug.WriteLine($"Block Hit:({point.HitCheck.X},{point.HitCheck.Y}) Center:({point.Center.X},{point.Center.Y}), Reflect:{reflect.Direction}");
                         // ボールの移動と反射を行う
                         ball.LastHitObject = block;
                         ball.MoveTo(point.Center);
@@ -191,9 +237,54 @@ namespace WinFormBreaker.Game {
         /// <param name="ball">ボール</param>
         /// <returns>当たったかどうか</returns>
         private bool CheckBarHit(IBall ball) {
-            var info = CheckBarReflection(this.BasePanel.ClientRectangle, this.ScrollBar, ball);
+            var info = CheckBarReflection(this.BaseControl.ClientRectangle, this.ScrollBar, ball);
             ball.Reflect(info);
             return info != null && info.Direction != Direction.None;
+        }
+
+        /// <summary>
+        /// 壁との当たり判定を行う
+        /// </summary>
+        /// <param name="ball">ボール</param>
+        /// <returns>当たったかどうか</returns>
+        private bool CheckWallHit(IBall ball) {
+            bool moved = false;
+            var area = this.BaseControl.ClientRectangle;
+            // ボールの当たり判定を行う
+            var moves = ball.MoveInfo.BallMoves;
+            foreach (var point in moves) {
+                var hit = point.HitCheck;
+                Direction direction = Direction.None;
+                // 左右に当たったかチェック
+                if (hit.X <= 0) {
+                    direction = Direction.Right;
+                } else if (hit.X >= area.Width) {
+                    direction = Direction.Left;
+                }
+                // 上に当たったかチェック
+                if (hit.Y <= 0) {
+                    direction = Direction.Bottom;
+                }
+#if true
+                else if (hit.Y >= area.Height) {
+                    direction = Direction.Top;
+                }
+#endif
+                // どこかに当たったらそこに移動する
+                if (direction != Direction.None) {
+                    ball.MoveTo(point.Center);
+                    ball.Reflect(new ReflectionInfo() {
+                        ReflectionType = ReflectionType.Multiply,
+                        CoefficientX = 1.0,
+                        CoefficientY = 1.0,
+                        Direction = direction
+                    });
+                    Debug.WriteLine($"Wall Hit:({point.HitCheck.X},{point.HitCheck.Y} Center:({point.Center.X},{point.Center.Y}), Reflect:{direction}");
+                    moved = true;
+                    break;
+                }
+            }
+            return moved;
         }
 
         /// <summary>
@@ -211,7 +302,7 @@ namespace WinFormBreaker.Game {
                     Visible = true,
                 };
                 this.Balls.Add(ball);
-                this.BasePanel.Controls.Add(ball);
+                this.BaseControl.Controls.Add(ball);
                 // ゲームが停止していたらスタートする
                 if (!this.GameEnabled) {
                     this.GameEnabled = true;
@@ -227,7 +318,7 @@ namespace WinFormBreaker.Game {
         /// <param name="ball">削除するボール</param>
         private void RemoveBall(IBall ball) {
             this.Balls.Remove(ball);
-            this.BasePanel.Controls.Remove(ball as Control);
+            this.BaseControl.Controls.Remove(ball as Control);
             // 盤面上のボールがなくなったらゲームを停止する
             if (!this.Balls.Any() && this.GameEnabled) {
                 this.GameEnabled = false;
@@ -238,10 +329,7 @@ namespace WinFormBreaker.Game {
         /// 破棄
         /// </summary>
         public void Dispose() {
-            if (this.BlockRegion != null) {
-                this.BlockRegion.Dispose();
-                this.BlockRegion = null;
-            }
+            // DO NOTHING
         }
         #endregion
 
@@ -269,15 +357,14 @@ namespace WinFormBreaker.Game {
         /// <summary>
         /// パネルにある表示からブロック情報を作成する
         /// </summary>
-        /// <param name="panel">ブロックが配置されたパネル</param>
-        private void CorrectBlocksFromPanel(Panel panel) {
-            foreach (var control in panel.Controls) {
-                if (control is IBlock block) {
+        /// <param name="control">ブロックが配置されたパネル</param>
+        private void CorrectBlocksFromControl(UserControl control) {
+            foreach (var item in control.Controls) {
+                if (item is IBlock block) {
                     if (block.Region != null) {
                         block.Enabled = false;
                         block.Broken += Block_Broken;
                         this.Blocks.Add(block);
-                        this.BlockRegion.Union(block.Region);
                     }
                 }
             }
@@ -294,7 +381,7 @@ namespace WinFormBreaker.Game {
                 this.Blocks.Remove(block);
             }
             if (sender is Control control) {
-                this.BasePanel.Controls.Remove(control);
+                this.BaseControl.Controls.Remove(control);
             }
         }
 

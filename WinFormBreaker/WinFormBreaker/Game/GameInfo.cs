@@ -10,9 +10,9 @@ namespace WinFormBreaker.Game {
     /// </summary>
     public class GameInfo {
         /// <summary>
-        /// ボール最大数
+        /// ボール初期数
         /// </summary>
-        private const int MAX_BALL = 10;
+        private const int INIT_BALL = 10;
 
         /// <summary>
         /// コンストラクタ
@@ -33,7 +33,7 @@ namespace WinFormBreaker.Game {
         /// リセット
         /// </summary>
         public void ResetState() {
-            this.RestBalls = MAX_BALL;
+            this.RestBalls = INIT_BALL;
         }
     }
 }

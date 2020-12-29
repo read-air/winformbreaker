@@ -17,18 +17,7 @@ namespace WinFormBreaker.Game {
         /// </summary>
         public BallMoveInfo() {
             this.BallMoves = new List<BallMove>();
-        }
-
-        /// <summary>
-        /// リストに座標を追加する
-        /// </summary>
-        /// <param name="center">中心座標</param>
-        /// <param name="hitCheck">当たり判定座標</param>
-        public void Add(Point center, Point hitCheck) {
-            this.BallMoves.Add(new BallMove() {
-                Center = center,
-                HitCheck = hitCheck,
-            });
+            this.BallPoints = new List<Point>();
         }
 
         /// <summary>
@@ -36,7 +25,15 @@ namespace WinFormBreaker.Game {
         /// </summary>
         public List<BallMove> BallMoves {
             get;
-            private set;
+            set;
+        }
+
+        /// <summary>
+        /// ボールのすべての点
+        /// </summary>
+        public List<Point> BallPoints {
+            get;
+            set;
         }
 
         /// <summary>

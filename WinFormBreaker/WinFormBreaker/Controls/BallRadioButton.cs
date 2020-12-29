@@ -205,14 +205,9 @@ namespace WinFormBreaker.Controls {
                 // Yの加速を計算
                 this.SpeedY -= Acceleration;
                 // X,Y軸計算
-                double locationX = location.X + this.SpeedX;
-                double locationY = location.Y + this.SpeedY;
-                int maxWidth = this.ClientArea.Width;
-                int maxHeight = this.ClientArea.Height;
-                // 位置を調整する
-                int setLocationX = this.AdjustLocationX(locationX, maxWidth);
-                int setLocationY = this.AdjustLocationY(locationY, maxHeight);
-                this.BallLocation = new Point(setLocationX, setLocationY);
+                int locationX = (int)(location.X + this.SpeedX);
+                int locationY = (int)(location.Y + this.SpeedY);
+                this.BallLocation = new Point(locationX, locationY);
                 // 座標を設定
                 base.Location = new Point(this.BallLocation.X - this.BallSize.Width, this.BallLocation.Y - this.BallSize.Height);
             }
@@ -228,14 +223,9 @@ namespace WinFormBreaker.Controls {
             // Yの加速を計算
             this.SpeedY -= Acceleration;
             // X,Y軸計算
-            double locationX = location.X + this.SpeedX;
-            double locationY = location.Y + this.SpeedY;
-            int maxWidth = this.ClientArea.Width;
-            int maxHeight = this.ClientArea.Height;
-            // 位置を調整する
-            int setLocationX = this.AdjustLocationX(locationX, maxWidth);
-            int setLocationY = this.AdjustLocationY(locationY, maxHeight);
-            var info = this.CalculateMoveInfo(location.X, location.Y, setLocationX, setLocationY);
+            int locationX = (int)(location.X + this.SpeedX);
+            int locationY = (int)(location.Y + this.SpeedY);
+            var info = this.CalculateMoveInfo(location.X, location.Y, locationX, locationY);
             this.MoveInfo = info;
         }
 
@@ -248,7 +238,9 @@ namespace WinFormBreaker.Controls {
             // 座標を記憶
             this.BallLocation = point;
             // 座標を設定
-            base.Location = new Point(this.BallLocation.X - this.BallSize.Width, this.BallLocation.Y - this.BallSize.Height);
+            int ballHalfWidth = this.BallSize.Width / 2;
+            int ballHalfHeight = this.BallSize.Height / 2;
+            base.Location = new Point(this.BallLocation.X - ballHalfWidth, this.BallLocation.Y - ballHalfHeight);
         }
 
         /// <summary>
@@ -311,51 +303,6 @@ namespace WinFormBreaker.Controls {
 
         #region 内部メソッド
         /// <summary>
-        /// X軸を調整する
-        /// </summary>
-        /// <param name="locationX">X軸の位置</param>
-        /// <param name="maxWidth">最大幅</param>
-        /// <returns>調整後のX軸</returns>
-        private int AdjustLocationX(double locationX, int maxWidth) {
-            if (locationX > maxWidth && this.SpeedX > 0) {
-                // 左右端に当たったら反発
-                this.SpeedX = -this.SpeedX;
-            } else if (locationX < 0 && this.SpeedX < 0) {
-                this.SpeedX = -this.SpeedX;
-            }
-            int setX = (int)locationX;
-            if (setX > maxWidth) {
-                setX = maxWidth;
-            } else if (setX < 0) {
-                setX = 0;
-            }
-            return setX;
-        }
-
-        /// <summary>
-        /// X軸を調整する
-        /// </summary>
-        /// <param name="locationY">Y軸の位置</param>
-        /// <param name="maxHeight">最大高さ</param>
-        /// <returns>調整後のY軸</returns>
-        private int AdjustLocationY(double locationY, int maxHeight) {
-            if (locationY > maxHeight && this.SpeedY > 0) {
-                // バーにぶつかったら係数を加算して反発
-            } else if (locationY < 0 && this.SpeedY < 0) {
-                // 天井にぶつかったらそのまま反発
-                this.SpeedY = -this.SpeedY;
-            }
-            // 下から先には行かない
-            int setY = (int)locationY;
-            if (setY > maxHeight) {
-                setY = maxHeight;
-            } else if (setY < 0) {
-                setY = 0;
-            }
-            return setY;
-        }
-
-        /// <summary>
         /// 移動先のリストを計算する
         /// </summary>
         /// <param name="fromX">移動元のX座標</param>
@@ -364,6 +311,24 @@ namespace WinFormBreaker.Controls {
         /// <param name="toY">移動先のY座標</param>
         /// <returns>リスト</returns>
         private BallMoveInfo CalculateMoveInfo(int fromX, int fromY, int toX, int toY) {
+            var info = new BallMoveInfo() {
+                SpeedX = this.SpeedX,
+                SpeedY = this.SpeedY,
+            };
+            // リストを作成
+            double ballHalfWidth = this.BallSize.Width / 2.0;
+            double ballHalfHeight = this.BallSize.Height / 2.0;
+            // 座標を記憶
+            var center = this.BallLocation;
+            double root2 = Math.Sqrt(2.0);
+            info.BallPoints.Add(new Point(center.X, (int)(center.Y - ballHalfHeight)));
+            info.BallPoints.Add(new Point((int)(center.X - ballHalfWidth), center.Y));
+            info.BallPoints.Add(new Point(center.X, (int)(center.Y + ballHalfHeight)));
+            info.BallPoints.Add(new Point((int)(center.X + ballHalfWidth), center.Y));
+            info.BallPoints.Add(new Point((int)(center.X + ballHalfWidth * root2), (int)(center.Y + ballHalfHeight * root2)));
+            info.BallPoints.Add(new Point((int)(center.X - ballHalfWidth * root2), (int)(center.Y + ballHalfHeight * root2)));
+            info.BallPoints.Add(new Point((int)(center.X - ballHalfWidth * root2), (int)(center.Y - ballHalfHeight * root2)));
+            info.BallPoints.Add(new Point((int)(center.X + ballHalfWidth * root2), (int)(center.Y - ballHalfHeight * root2)));
             // 中心座標のリストを計算する
             var centerList = new List<(double X, double Y)>();
             int width = toX - fromX, height = toY - fromY;
@@ -372,7 +337,7 @@ namespace WinFormBreaker.Controls {
                 centerList.Add((fromX + width * ratio, fromY + height * ratio));
             }
             // 角度を計算
-            double angle = Math.Atan2(height, width);
+            double angle = Math.Atan2(-height, width);
             double cos0 = Math.Cos(angle);
             double sin0 = Math.Sin(angle);
             // ±30°の点を追加する
@@ -382,24 +347,29 @@ namespace WinFormBreaker.Controls {
             double angleN = angle - Math.PI / 6;
             double cosN = Math.Cos(angleN);
             double sinN = Math.Sin(angleN);
-            // リストを作成
-            double ballHalfWidth = this.BallSize.Width / 2.0;
-            double ballHalfHeight = this.BallSize.Height / 2.0;
-            var info = new BallMoveInfo() {
-                SpeedX = this.SpeedX,
-                SpeedY = this.SpeedY,
-            };
+            // それぞれの点を追加
             foreach (var (x, y) in centerList) {
                 var ballCenter = new Point((int)x, (int)y);
                 var hitPoint = new Point((int)(x + ballHalfWidth * cos0), (int)(y - ballHalfHeight * sin0));
-                info.Add(ballCenter, hitPoint);
+                info.BallMoves.Add(new BallMove() {
+                    Center = ballCenter,
+                    HitCheck = hitPoint,
+                });
+#if false
                 var hitPointP = new Point((int)(x + ballHalfWidth * cosP), (int)(y - ballHalfHeight * sinP));
-                info.Add(ballCenter, hitPointP);
+                info.BallMoves.Add(new BallMove() {
+                    Center = ballCenter,
+                    HitCheck = hitPointP,
+                });
                 var hitPointN = new Point((int)(x + ballHalfWidth * cosN), (int)(y - ballHalfHeight * sinN));
-                info.Add(ballCenter, hitPointN);
+                info.BallMoves.Add(new BallMove() {
+                    Center = ballCenter,
+                    HitCheck = hitPointN,
+                });
+#endif
             }
             return info;
         }
-        #endregion
+#endregion
     }
 }

@@ -69,6 +69,16 @@ namespace WinFormBreaker.Controls {
 
         #region 外部メソッド
         /// <summary>
+        /// 命中したかチェックを行います。
+        /// </summary>
+        /// <param name="point">チェックする座標</param>
+        /// <returns>命中したかどうか</returns>
+        public bool CheckHit(Point point) {
+            var rectangle = new Rectangle(this.Location, this.ClientSize);
+            return rectangle.Contains(point);
+        }
+
+        /// <summary>
         /// このブロックを壊す。
         /// </summary>
         /// <param name="point">ヒットした座標</param>

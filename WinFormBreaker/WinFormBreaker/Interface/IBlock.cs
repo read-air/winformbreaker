@@ -30,6 +30,13 @@ namespace WinFormBreaker.Interface {
 
         #region メソッド
         /// <summary>
+        /// 命中したかチェックを行います。
+        /// </summary>
+        /// <param name="point">チェックする座標</param>
+        /// <returns>命中したかどうか</returns>
+        bool CheckHit(Point point);
+
+        /// <summary>
         /// このブロックを壊す。
         /// </summary>
         /// <param name="point">座標</param>

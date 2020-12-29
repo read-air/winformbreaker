@@ -1,6 +1,6 @@
 ﻿
-namespace WinFormBreaker.Controls {
-    partial class GamePanel {
+namespace WinFormBreaker.Controls.Stages {
+    partial class Stage1 {
         /// <summary> 
         /// 必要なデザイナー変数です。
         /// </summary>
@@ -24,40 +24,29 @@ namespace WinFormBreaker.Controls {
         /// コード エディターで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            this.tmrUpdate = new System.Windows.Forms.Timer(this.components);
-            this.scbBar = new WinFormBreaker.Controls.GameScrollBar();
+            this.progressBarBlock1 = new WinFormBreaker.Controls.ProgressBarBlock();
             this.SuspendLayout();
             // 
-            // tmrUpdate
+            // progressBarBlock1
             // 
-            this.tmrUpdate.Interval = 20;
-            this.tmrUpdate.Tick += new System.EventHandler(this.UpdateTimer_Tick);
+            this.progressBarBlock1.Location = new System.Drawing.Point(83, 301);
+            this.progressBarBlock1.Name = "progressBarBlock1";
+            this.progressBarBlock1.Size = new System.Drawing.Size(310, 23);
+            this.progressBarBlock1.TabIndex = 2;
             // 
-            // scbBar
-            // 
-            this.scbBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.scbBar.LargeChange = 25;
-            this.scbBar.Location = new System.Drawing.Point(0, 623);
-            this.scbBar.Name = "scbBar";
-            this.scbBar.Size = new System.Drawing.Size(480, 17);
-            this.scbBar.TabIndex = 1;
-            // 
-            // GamePanel
+            // Stage1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.scbBar);
-            this.Name = "GamePanel";
-            this.Size = new System.Drawing.Size(480, 640);
-            this.Load += new System.EventHandler(this.GamePanel_Load);
+            this.Controls.Add(this.progressBarBlock1);
+            this.Name = "Stage1";
+            this.Controls.SetChildIndex(this.progressBarBlock1, 0);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Timer tmrUpdate;
-        private GameScrollBar scbBar;
+        private ProgressBarBlock progressBarBlock1;
     }
 }

@@ -43,6 +43,14 @@ namespace WinFormBreaker.Controls {
         }
 
         /// <summary>
+        /// マウスクリック
+        /// </summary>
+        /// <param name="e">イベント</param>
+        protected override void OnMouseClick(MouseEventArgs e) {
+            this.GameBoard.AddBall(new Point(e.X, e.Y));
+        }
+
+        /// <summary>
         /// ロード時イベント
         /// </summary>
         /// <param name="sender">送信元オブジェクト</param>
@@ -50,7 +58,7 @@ namespace WinFormBreaker.Controls {
         private void GamePanel_Load(object sender, EventArgs e) {
             // デザイン中は動作させない
             if (!this.DesignMode) {
-                this.GameBoard = new GameBoard(this.pnlGameArea, this.scbBar, this.tmrUpdate);
+                this.GameBoard = new GameBoard(this, this.scbBar, this.tmrUpdate);
             }
         }
 
@@ -63,15 +71,6 @@ namespace WinFormBreaker.Controls {
             if (this.GameBoard != null) {
                 this.GameBoard.Move();
             }
-        }
-
-        /// <summary>
-        /// クリックイベント
-        /// </summary>
-        /// <param name="sender">送信元オブジェクト</param>
-        /// <param name="e">イベントパラメータ</param>
-        private void GameArea_MouseClick(object sender, MouseEventArgs e) {
-            this.GameBoard.AddBall(new Point(e.X, e.Y));
         }
     }
 }
