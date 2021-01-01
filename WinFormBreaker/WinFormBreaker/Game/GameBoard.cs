@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define PREVENT_FALL
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -112,7 +114,7 @@ namespace WinFormBreaker.Game {
                 }
                 // ボールの移動先を取得する
                 ball.MoveNext();
-#if true
+#if false
                 var ballobj = (ball as BallRadioButton);
                 var location = ballobj.Location;
                 var ballFirst = ball.MoveInfo.BallMoves.First();
@@ -145,7 +147,7 @@ namespace WinFormBreaker.Game {
                 if (!moved) {
                     bool fall = this.CheckFall(this.ScrollBar, ball);
                     if (fall) {
-#if false
+#if !PREVENT_FALL
                         fallBalls.Add(ball);
                         moved = true;
 #else
@@ -185,17 +187,35 @@ namespace WinFormBreaker.Game {
                     }
                 }
             } else {
+                int barTop = bar.Top;
+                int barLeft = bar.BarLeft, barRight = bar.BarRight;
                 if (lastHitObject == bar.LeftButtonObject) {
                     // 左バーの当たり判定からすべて外れていることを確認する
                     foreach (var point in points) {
+                        bool hit = point.Y >= barTop && point.X < bar.ButtonWidth;
+                        if (hit) {
+                            slippedOut = false;
+                            break;
+                        }
                     }
                 } else if (lastHitObject == bar.CenterButtonObject) {
                     // 中央バーの当たり判定からすべて外れていることを確認する
                     foreach (var point in points) {
+                        bool hit = point.Y >= barTop && point.X >= barLeft && point.X <= barRight;
+                        if (hit) {
+                            slippedOut = false;
+                            break;
+                        }
                     }
                 } else if (lastHitObject == bar.RightButtonObject) {
                     // 右バーの当たり判定からすべて外れていることを確認する
+                    var area = this.BaseControl.ClientRectangle;
                     foreach (var point in points) {
+                        bool hit = point.Y >= barTop && point.X > area.Width - bar.ButtonWidth;
+                        if (hit) {
+                            slippedOut = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -265,7 +285,7 @@ namespace WinFormBreaker.Game {
                 if (hit.Y <= 0) {
                     direction = Direction.Bottom;
                 }
-#if true
+#if PREVENT_FALL
                 else if (hit.Y >= area.Height) {
                     direction = Direction.Top;
                 }
@@ -371,7 +391,7 @@ namespace WinFormBreaker.Game {
         }
 
         /// <summary>
-        /// ブロックが破壊されたときのいべんと　
+        /// ブロックが破壊されたときのイベント
         /// </summary>
         /// <param name="sender">送信元オブジェクト</param>
         /// <param name="e">イベントパラメータ</param>

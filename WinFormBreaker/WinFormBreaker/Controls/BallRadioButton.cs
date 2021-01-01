@@ -355,7 +355,6 @@ namespace WinFormBreaker.Controls {
                     Center = ballCenter,
                     HitCheck = hitPoint,
                 });
-#if false
                 var hitPointP = new Point((int)(x + ballHalfWidth * cosP), (int)(y - ballHalfHeight * sinP));
                 info.BallMoves.Add(new BallMove() {
                     Center = ballCenter,
@@ -366,10 +365,9 @@ namespace WinFormBreaker.Controls {
                     Center = ballCenter,
                     HitCheck = hitPointN,
                 });
-#endif
             }
             return info;
         }
-#endregion
+        #endregion
     }
 }
