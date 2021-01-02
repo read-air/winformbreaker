@@ -10,33 +10,11 @@ using WinFormBreaker.Game;
 
 namespace WinFormBreaker.Controls {
     public class LabelBlock : Label, IBlock {
-        #region 
-        /// <summary>
-        /// 領域
-        /// </summary>
-        private Region region;
-        #endregion
-
         #region イベント
         /// <summary>
         /// ブロックが破壊されたことを通知するイベント
         /// </summary>
         public event EventHandler Broken;
-        #endregion
-
-        #region 外部プロパティ
-        /// <summary>
-        /// ブロックのリージョン
-        /// </summary>
-        Region IBlock.Region {
-            get {
-                if(this.region == null) {
-                    var rectangle = new Rectangle(this.Location, this.ClientSize);
-                    this.region = new Region(rectangle);
-                }
-                return this.region;
-            }
-        }
         #endregion
 
         #region 外部メソッド
@@ -71,13 +49,6 @@ namespace WinFormBreaker.Controls {
         /// <param name="disposing">リソースを破棄するか</param>
         protected override void Dispose(bool disposing) {
             base.Dispose(disposing);
-            if (disposing) {
-                // リソース破棄
-                if (this.region != null) {
-                    this.region.Dispose();
-                    this.region = null;
-                }
-            }
         }
         #endregion
     }

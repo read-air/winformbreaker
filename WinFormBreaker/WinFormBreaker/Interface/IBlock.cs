@@ -15,13 +15,6 @@ namespace WinFormBreaker.Interface {
         #endregion
 
         #region プロパティ
-        /// <summary>
-        /// ブロックのリージョン
-        /// </summary>
-        Region Region {
-            get;
-        }
-
         bool Enabled {
             get;
             set;

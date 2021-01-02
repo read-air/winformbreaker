@@ -23,21 +23,6 @@ namespace WinFormBreaker.Controls {
         public event EventHandler Broken;
         #endregion
 
-        #region 外部プロパティ
-        /// <summary>
-        /// ブロックのリージョン
-        /// </summary>
-        Region IBlock.Region {
-            get {
-                if (this.region == null) {
-                    var rectangle = new Rectangle(this.Location, this.ClientSize);
-                    this.region = new Region(rectangle);
-                }
-                return this.region;
-            }
-        }
-        #endregion
-
         #region 外部メソッド
         /// <summary>
         /// 命中したかチェックを行います。

@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WinFormBreaker.Game;
 using WinFormBreaker.Interface;
 
 namespace WinFormBreaker.Controls {
-    public class ButtonBlock : Button, IBlock {
+    public class ComboBoxBlock : ComboBox, IBlock {
         #region イベント
         /// <summary>
         /// ブロックが破壊されたことを通知するイベント
@@ -38,16 +42,6 @@ namespace WinFormBreaker.Controls {
             // 破壊イベントを送信
             this.Broken?.Invoke(this, EventArgs.Empty);
             return info;
-        }
-
-        /// <summary>
-        /// クリック時のイベントを動作させる。
-        /// </summary>
-        /// <param name="e">イベントパラメータ</param>
-        protected override void OnClick(EventArgs e) {
-            // クリックしたときもどうように破壊される
-            this.Broken?.Invoke(this, EventArgs.Empty);
-            base.OnClick(e);
         }
 
         /// <summary>

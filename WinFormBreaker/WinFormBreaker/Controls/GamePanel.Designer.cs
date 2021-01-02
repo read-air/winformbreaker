@@ -32,7 +32,6 @@ namespace WinFormBreaker.Controls {
             // tmrUpdate
             // 
             this.tmrUpdate.Interval = 20;
-            this.tmrUpdate.Tick += new System.EventHandler(this.UpdateTimer_Tick);
             // 
             // scbBar
             // 

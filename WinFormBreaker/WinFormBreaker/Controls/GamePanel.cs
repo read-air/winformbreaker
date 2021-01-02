@@ -27,6 +27,11 @@ namespace WinFormBreaker.Controls {
         }
 
         /// <summary>
+        /// ゲームが完了した
+        /// </summary>
+        public event EventHandler GameFinished;
+
+        /// <summary>
         /// ボール
         /// </summary>
         private BallRadioButton BreakBall {
@@ -40,6 +45,13 @@ namespace WinFormBreaker.Controls {
         private GameBoard GameBoard {
             get;
             set;
+        }
+
+        /// <summary>
+        /// ゲームの終了処理を行う
+        /// </summary>
+        protected void FinishGame() {
+            this.GameFinished?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -59,18 +71,18 @@ namespace WinFormBreaker.Controls {
             // デザイン中は動作させない
             if (!this.DesignMode) {
                 this.GameBoard = new GameBoard(this, this.scbBar, this.tmrUpdate);
+                this.GameBoard.GameFinished += GameBoard_GameFinished;
             }
         }
 
         /// <summary>
-        /// タイマーイベント
+        /// ゲーム完了
         /// </summary>
         /// <param name="sender">送信元オブジェクト</param>
         /// <param name="e">イベントパラメータ</param>
-        private void UpdateTimer_Tick(object sender, EventArgs e) {
-            if (this.GameBoard != null) {
-                this.GameBoard.Move();
-            }
+        private void GameBoard_GameFinished(object sender, EventArgs e) {
+            // ゲーム完了処理を行う
+            this.FinishGame();
         }
     }
 }

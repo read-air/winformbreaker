@@ -10,13 +10,6 @@ using WinFormBreaker.Game;
 
 namespace WinFormBreaker.Controls {
     public class CheckBoxBlock : CheckBox, IBlock {
-        #region メンバ変数
-        /// <summary>
-        /// 領域
-        /// </summary>
-        private Region region;
-        #endregion
-
         #region コンストラクタ
         /// <summary>
         /// コンストラクタ
@@ -31,26 +24,6 @@ namespace WinFormBreaker.Controls {
         /// ブロックが破壊されたことを通知するイベント
         /// </summary>
         public event EventHandler Broken;
-        #endregion
-
-        #region 外部プロパティ
-        /// <summary>
-        /// ブロックのリージョン
-        /// </summary>
-        Region IBlock.Region {
-            get {
-                // チェックボックスのリージョンは、矩形の部分のみ
-                if (this.region == null) {
-                    const int BOX_MARGIN = 1;
-                    const int BOX_SIZE = 12;
-                    var point = new Point(this.Location.X + BOX_MARGIN, this.Location.Y + BOX_MARGIN);
-                    var size = new Size(BOX_SIZE, BOX_SIZE);
-                    var rectangle = new Rectangle(point, size);
-                    this.region = new Region(rectangle);
-                }
-                return this.region;
-            }
-        }
         #endregion
 
         #region 外部メソッド
@@ -102,13 +75,6 @@ namespace WinFormBreaker.Controls {
         /// <param name="disposing">リソースを破棄するか</param>
         protected override void Dispose(bool disposing) {
             base.Dispose(disposing);
-            if (disposing) {
-                // リソース破棄
-                if (this.region != null) {
-                    this.region.Dispose();
-                    this.region = null;
-                }
-            }
         }
         #endregion
     }

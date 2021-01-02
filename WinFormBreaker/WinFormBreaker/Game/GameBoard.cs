@@ -14,6 +14,30 @@ namespace WinFormBreaker.Game {
     /// ゲームボード
     /// </summary>
     public class GameBoard : IDisposable {
+        #region Enum
+        /// <summary>
+        /// ゲームの状態
+        /// </summary>
+        private enum Status {
+            /// <summary>
+            /// 状態なし
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// ゲーム停止中
+            /// </summary>
+            Stopped,
+            /// <summary>
+            /// ゲーム実行中
+            /// </summary>
+            Playing,
+            /// <summary>
+            /// ゲーム終了
+            /// </summary>
+            Finished,
+        }
+        #endregion Enum
+
         #region 定数
         /// <summary>
         /// 端の幅
@@ -26,6 +50,10 @@ namespace WinFormBreaker.Game {
         /// ゲームの有効状態
         /// </summary>
         private bool gameEnabled;
+        /// <summary>
+        /// ゲームの状態
+        /// </summary>
+        private Status gameStatus;
         #endregion
 
         #region コンストラクタ
@@ -36,12 +64,21 @@ namespace WinFormBreaker.Game {
             this.BaseControl = control ?? throw new ArgumentNullException(nameof(control));
             this.ScrollBar = scrollBar ?? throw new ArgumentNullException(nameof(scrollBar));
             this.GameTimer = timer ?? throw new ArgumentNullException(nameof(timer));
+            this.GameTimer.Tick += GameTimer_Tick;
             this.Blocks = new List<IBlock>();
             this.Balls = new List<IBall>();
             this.GameInfo = new GameInfo();
             this.CorrectBlocksFromControl(control);
+            this.GameStatus = Status.Stopped;
         }
         #endregion
+
+        #region イベント
+        /// <summary>
+        /// ゲームが完了した
+        /// </summary>
+        public event EventHandler GameFinished;
+        #endregion イベント
 
         #region 外部プロパティ
         /// <summary>
@@ -167,6 +204,8 @@ namespace WinFormBreaker.Game {
             foreach (var fallBall in fallBalls) {
                 this.RemoveBall(fallBall);
             }
+            // ゲームの状態を確認する
+            this.CheckGameStatus();
         }
 
         /// <summary>
@@ -324,8 +363,8 @@ namespace WinFormBreaker.Game {
                 this.Balls.Add(ball);
                 this.BaseControl.Controls.Add(ball);
                 // ゲームが停止していたらスタートする
-                if (!this.GameEnabled) {
-                    this.GameEnabled = true;
+                if (this.GameStatus == Status.Stopped) {
+                    this.GameStatus = Status.Playing;
                 }
                 added = true;
             }
@@ -341,7 +380,9 @@ namespace WinFormBreaker.Game {
             this.BaseControl.Controls.Remove(ball as Control);
             // 盤面上のボールがなくなったらゲームを停止する
             if (!this.Balls.Any() && this.GameEnabled) {
-                this.GameEnabled = false;
+                if (this.GameStatus == Status.Playing) {
+                    this.GameStatus = Status.Stopped;
+                }
             }
         }
 
@@ -371,6 +412,39 @@ namespace WinFormBreaker.Game {
                 }
             }
         }
+
+        /// <summary>
+        /// ゲームの状態
+        /// </summary>
+        private Status GameStatus {
+            get {
+                return this.gameStatus;
+            }
+            set {
+                if(this.gameStatus != value) {
+                    this.gameStatus = value;
+                    switch (value) {
+                        case Status.None:
+                            this.GameEnabled = false;
+                            break;
+                        case Status.Playing:
+                            this.GameTimer.Interval = 20;
+                            this.GameEnabled = true;
+                            break;
+                        case Status.Stopped:
+                            this.GameEnabled = false;
+                            break;
+                        case Status.Finished:
+                            this.GameEnabled = false;
+                            this.GameTimer.Interval = 3000;
+                            this.GameTimer.Start();
+                            break;  
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
         #endregion
 
         #region 内部メソッド
@@ -381,11 +455,9 @@ namespace WinFormBreaker.Game {
         private void CorrectBlocksFromControl(UserControl control) {
             foreach (var item in control.Controls) {
                 if (item is IBlock block) {
-                    if (block.Region != null) {
-                        block.Enabled = false;
-                        block.Broken += Block_Broken;
-                        this.Blocks.Add(block);
-                    }
+                    block.Enabled = false;
+                    block.Broken += Block_Broken;
+                    this.Blocks.Add(block);
                 }
             }
         }
@@ -507,6 +579,42 @@ namespace WinFormBreaker.Game {
                 fall = bottomY >= fallY && ball.SpeedY > 0;
             }
             return fall;
+        }
+
+        /// <summary>
+        /// ゲームのクリア、ゲームオーバーの状態を確認する
+        /// </summary>
+        private void CheckGameStatus() {
+            // クリアチェック
+            if (!this.Blocks.Any()) {
+                // すべてのブロックが破壊されていればクリア
+                this.GameStatus = Status.Finished;
+            }
+            // ゲームオーバーチェック
+            else if(this.GameInfo.RestBalls <= 0 && !this.Balls.Any()) {
+                // すべてのボールが使い切られていて、ボールがすべて落下していたらゲームオーバー
+                this.GameStatus = Status.Finished;
+            }
+        }
+
+        /// <summary>
+        /// タイマーイベント
+        /// </summary>
+        /// <param name="sender">送信元オブジェクト</param>
+        /// <param name="e">イベントパラメータ</param>
+        private void GameTimer_Tick(object sender, EventArgs e) {
+            switch (this.GameStatus) {
+                case Status.Playing:
+                    this.Move();
+                    break;
+                case Status.Finished:
+                    this.GameFinished?.Invoke(this, EventArgs.Empty);
+                    break;
+                case Status.None:
+                case Status.Stopped:
+                default:
+                    break;
+            }
         }
         #endregion
     }

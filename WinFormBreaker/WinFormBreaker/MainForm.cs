@@ -56,9 +56,25 @@ namespace WinFormBreaker {
             // パネルをコントロールに追加してドックする
             if(gamePanel != null) {
                 this.GamePanel = gamePanel;
+                this.GamePanel.GameFinished += GamePanel_GameFinished;
                 this.Controls.Add(gamePanel);
                 gamePanel.Dock = DockStyle.Fill;
             }
+        }
+
+        /// <summary>
+        /// ゲームが完了した
+        /// </summary>
+        /// <param name="sender">送信元オブジェクト</param>
+        /// <param name="stage">イベントパラメータ</param>
+        private void GamePanel_GameFinished(object sender, EventArgs e) {
+            if(this.GamePanel != null) {
+                this.GamePanel.GameFinished -= this.GamePanel_GameFinished;
+                this.Controls.Remove(this.GamePanel);
+                this.GamePanel.Dispose();
+                this.GamePanel = null;
+            }
+            this.mainMenu.Show();
         }
     }
 }

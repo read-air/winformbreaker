@@ -38,19 +38,6 @@ namespace WinFormBreaker.Controls {
 
         #region 外部プロパティ
         /// <summary>
-        /// ブロックのリージョン
-        /// </summary>
-        Region IBlock.Region {
-            get {
-                if (this.region == null) {
-                    var rectangle = new Rectangle(this.Location, this.ClientSize);
-                    this.region = new Region(rectangle);
-                }
-                return this.region;
-            }
-        }
-
-        /// <summary>
         /// 正解となるテキスト
         /// </summary>
         public string InputText {
