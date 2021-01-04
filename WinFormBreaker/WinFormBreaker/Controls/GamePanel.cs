@@ -72,6 +72,29 @@ namespace WinFormBreaker.Controls {
             if (!this.DesignMode) {
                 this.GameBoard = new GameBoard(this, this.scbBar, this.tmrUpdate);
                 this.GameBoard.GameFinished += GameBoard_GameFinished;
+                this.GameBoard.GameEnd += GameBoard_GameEnd;
+                this.bsGameInfo.DataSource = this.GameBoard.GameInfo;
+            }
+        }
+
+        /// <summary>
+        /// ゲーム終了
+        /// </summary>
+        /// <param name="sender">送信元オブジェクト</param>
+        /// <param name="e">イベントパラメータ</param>
+        private void GameBoard_GameEnd(object sender, GameEndType e) {
+            switch (e) {
+                case GameEndType.Clear:
+                    this.lblClear.BringToFront();
+                    this.lblClear.Show();
+                    break;
+                case GameEndType.GameOver:
+                    this.lblGameOver.BringToFront();
+                    this.lblGameOver.Show();
+                    break;
+                case GameEndType.None:
+                default:
+                    break;
             }
         }
 

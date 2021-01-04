@@ -10,11 +10,25 @@ using WinFormBreaker.Interface;
 
 namespace WinFormBreaker.Controls {
     public class ComboBoxBlock : ComboBox, IBlock {
+        #region 定数
+        
+        #endregion
+
         #region イベント
         /// <summary>
         /// ブロックが破壊されたことを通知するイベント
         /// </summary>
         public event EventHandler Broken;
+        #endregion
+
+        #region コンストラクタ
+        public ComboBoxBlock() : base() {
+            this.Items.AddRange(new object[] {
+                new EffectInfo(),
+                new EffectInfo(),
+                new EffectInfo(),
+            });
+        }
         #endregion
 
         #region 外部メソッド

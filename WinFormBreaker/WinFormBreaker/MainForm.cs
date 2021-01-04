@@ -49,6 +49,9 @@ namespace WinFormBreaker {
                 case 1:
                     gamePanel = new Stage1();
                     break;
+                case 101:
+                    // 101:チュートリアルステージ
+                    break;
                 default:
                     gamePanel = new DebugStage();
                     break;

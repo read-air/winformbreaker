@@ -1,6 +1,6 @@
 ﻿
 namespace WinFormBreaker.Controls.Stages {
-    partial class Stage1 {
+    partial class TutorialStage1 {
         /// <summary> 
         /// 必要なデザイナー変数です。
         /// </summary>

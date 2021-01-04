@@ -46,7 +46,11 @@ namespace WinFormBreaker.Controls {
             var rectangle = new Rectangle(this.Location, this.ClientSize);
             var info = ReflectionHelper.CalculateReflection(ball, this, rectangle, point);
             // ボールパワー分数値を減算する
-            this.Value -= ball.Power;
+            if(this.Value > ball.Power) {
+                this.Value -= ball.Power;
+            } else {
+                this.Value = 0;
+            }
             return info;
         }
 

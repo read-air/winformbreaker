@@ -49,6 +49,12 @@
     <Compile Include="Controls\ComboBoxBlock.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\Stages\TutorialStage1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Stages\TutorialStage1.Designer.cs">
+      <DependentUpon>TutorialStage1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Stages\Stage1.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -87,6 +93,7 @@
     <Compile Include="Controls\TextBoxBlock.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Game\EffectInfo.cs" />
     <Compile Include="Game\GameBoard.cs" />
     <Compile Include="Game\GameInfo.cs" />
     <Compile Include="Interface\IBall.cs" />
@@ -115,6 +122,9 @@
     <EmbeddedResource Include="Controls\GamePanel.resx">
       <DependentUpon>GamePanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Stages\TutorialStage1.resx">
+      <DependentUpon>TutorialStage1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Stages\Stage1.resx">
       <DependentUpon>Stage1.cs</DependentUpon>
     </EmbeddedResource>
@@ -136,6 +146,7 @@
     <EmbeddedResource Include="Controls\Stages\DebugStage.resx">
       <DependentUpon>DebugStage.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\WinFormBreaker.Game.GameInfo.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
