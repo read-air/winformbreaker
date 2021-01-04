@@ -29,11 +29,11 @@ namespace WinFormBreaker.Controls {
         /// <summary>
         /// 速度最大値(Y)
         /// </summary>
-        private const int MaxSpeedY = 50;
+        private const int MaxSpeedY = 20;
         /// <summary>
         /// 加速度
         /// </summary>
-        private const double Acceleration = -0.5;
+        private const double Acceleration = -0.2;
         /// <summary>
         /// 反発係数
         /// </summary>
@@ -258,9 +258,9 @@ namespace WinFormBreaker.Controls {
                             this.SpeedX = MaxSpeedX * reflection.CoefficientX;
                         }
                         if ((direction & Direction.Top) == Direction.Top) {
-                            this.SpeedX = -MaxSpeedY * reflection.CoefficientY;
-                        } else if ((direction & Direction.Top) == Direction.Top) {
-                            this.SpeedX = MaxSpeedY * reflection.CoefficientY;
+                            this.SpeedY = -MaxSpeedY * reflection.CoefficientY;
+                        } else if ((direction & Direction.Bottom) == Direction.Bottom) {
+                            this.SpeedY = MaxSpeedY * reflection.CoefficientY;
                         }
                         break;
                     case ReflectionType.Multiply:

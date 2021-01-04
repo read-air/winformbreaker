@@ -10,6 +10,25 @@ using WinFormBreaker.Controls;
 using WinFormBreaker.Interface;
 
 namespace WinFormBreaker.Game {
+
+    /// <summary>
+    /// ゲーム終了タイプ
+    /// </summary>
+    public enum GameEndType {
+        /// <summary>
+        /// なし
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// ゲームクリア
+        /// </summary>
+        Clear = 1,
+        /// <summary>
+        /// ゲームオーバー
+        /// </summary>
+        GameOver = 2,
+    }
+
     /// <summary>
     /// ゲームボード
     /// </summary>
@@ -75,7 +94,12 @@ namespace WinFormBreaker.Game {
 
         #region イベント
         /// <summary>
-        /// ゲームが完了した
+        /// ゲームが終了した
+        /// </summary>
+        public event EventHandler<GameEndType> GameEnd;
+
+        /// <summary>
+        /// ゲームが完全に終了した
         /// </summary>
         public event EventHandler GameFinished;
         #endregion イベント
@@ -589,11 +613,15 @@ namespace WinFormBreaker.Game {
             if (!this.Blocks.Any()) {
                 // すべてのブロックが破壊されていればクリア
                 this.GameStatus = Status.Finished;
+                // ゲーム終了
+                this.GameEnd?.Invoke(this, GameEndType.Clear);
             }
             // ゲームオーバーチェック
             else if(this.GameInfo.RestBalls <= 0 && !this.Balls.Any()) {
                 // すべてのボールが使い切られていて、ボールがすべて落下していたらゲームオーバー
                 this.GameStatus = Status.Finished;
+                // ゲーム終了
+                this.GameEnd?.Invoke(this, GameEndType.GameOver);
             }
         }
 
