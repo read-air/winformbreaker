@@ -34,6 +34,8 @@ namespace WinFormBreaker.Scenes {
             this.btnStage1 = new System.Windows.Forms.Button();
             this.btnStage2 = new System.Windows.Forms.Button();
             this.btnStage6 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnTutorial1
@@ -146,10 +148,30 @@ namespace WinFormBreaker.Scenes {
             this.btnStage6.UseVisualStyleBackColor = true;
             this.btnStage6.Click += new System.EventHandler(this.Stage_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(26, 517);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(399, 19);
+            this.textBox1.TabIndex = 2;
+            this.textBox1.Text = "https://github.com/read-air/winformbreaker";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(26, 499);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(176, 12);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "拙いソースコードは以下からご自由に";
+            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnStage6);
             this.Controls.Add(this.button5);
@@ -179,5 +201,7 @@ namespace WinFormBreaker.Scenes {
         private System.Windows.Forms.Button btnStage1;
         private System.Windows.Forms.Button btnStage2;
         private System.Windows.Forms.Button btnStage6;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label2;
     }
 }
