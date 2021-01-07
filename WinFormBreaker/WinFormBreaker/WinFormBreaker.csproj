@@ -49,6 +49,42 @@
     <Compile Include="Controls\ComboBoxBlock.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\Stages\Stage6.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage6.Designer.cs">
+      <DependentUpon>Stage6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage5.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage5.Designer.cs">
+      <DependentUpon>Stage5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage4.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage4.Designer.cs">
+      <DependentUpon>Stage4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage3.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage3.Designer.cs">
+      <DependentUpon>Stage3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Stages\Stage2.Designer.cs">
+      <DependentUpon>Stage2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Stages\TutorialStage2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Stages\TutorialStage2.Designer.cs">
+      <DependentUpon>TutorialStage2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Stages\TutorialStage1.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -121,6 +157,24 @@
     </Compile>
     <EmbeddedResource Include="Controls\GamePanel.resx">
       <DependentUpon>GamePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Stages\Stage6.resx">
+      <DependentUpon>Stage6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Stages\Stage5.resx">
+      <DependentUpon>Stage5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Stages\Stage4.resx">
+      <DependentUpon>Stage4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Stages\Stage3.resx">
+      <DependentUpon>Stage3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Stages\Stage2.resx">
+      <DependentUpon>Stage2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Stages\TutorialStage2.resx">
+      <DependentUpon>TutorialStage2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Stages\TutorialStage1.resx">
       <DependentUpon>TutorialStage1.cs</DependentUpon>

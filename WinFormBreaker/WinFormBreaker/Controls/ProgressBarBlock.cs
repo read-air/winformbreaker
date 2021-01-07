@@ -22,6 +22,27 @@ namespace WinFormBreaker.Controls {
         /// ブロックが破壊されたことを通知するイベント
         /// </summary>
         public event EventHandler Broken;
+        /// <summary>
+        /// プログレスバーの値の変化を通知するイベント
+        /// </summary>
+        public event EventHandler ProgressChanged;
+        #endregion
+
+        #region 外部プロパティ
+        /// <summary>
+        /// 値
+        /// </summary>
+        public new int Value {
+            get {
+                return base.Value;
+            }
+            set {
+                if(base.Value != value) {
+                    base.Value = value;
+                    this.ProgressChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
         #endregion
 
         #region 外部メソッド

@@ -13,6 +13,20 @@ using WinFormBreaker.Controls.Stages;
 namespace WinFormBreaker {
     public partial class MainForm : Form {
         /// <summary>
+        /// ゲームのステージテーブル
+        /// </summary>
+        private static readonly Dictionary<int, Type> GameStageTypeTable = new Dictionary<int, Type>() {
+            { 1, typeof(Stage2) },
+            { 2, typeof(Stage1) },
+            { 3, typeof(Stage3) },
+            { 4, typeof(Stage4) },
+            { 5, typeof(Stage5) },
+            { 6, typeof(Stage6) },
+            { 101, typeof(TutorialStage1) },
+            { 102, typeof(TutorialStage2) },
+        };
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public MainForm() {
@@ -45,16 +59,11 @@ namespace WinFormBreaker {
             this.mainMenu.Visible = false;
             GamePanel gamePanel = null;
             // パネルを選択する
-            switch (stage) {
-                case 1:
-                    gamePanel = new Stage1();
-                    break;
-                case 101:
-                    // 101:チュートリアルステージ
-                    break;
-                default:
-                    gamePanel = new DebugStage();
-                    break;
+            bool get = GameStageTypeTable.TryGetValue(stage, out Type stageType);
+            if (get) {
+                gamePanel = Activator.CreateInstance(stageType) as GamePanel;
+            } else {
+                gamePanel = new DebugStage();
             }
             // パネルをコントロールに追加してドックする
             if(gamePanel != null) {

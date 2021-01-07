@@ -24,26 +24,28 @@ namespace WinFormBreaker.Scenes {
         /// コード エディターで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnTutorial1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnTutorial2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.btnDebug = new System.Windows.Forms.Button();
             this.btnStage1 = new System.Windows.Forms.Button();
+            this.btnStage2 = new System.Windows.Forms.Button();
+            this.btnStage6 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // button1
+            // btnTutorial1
             // 
-            this.button1.Location = new System.Drawing.Point(26, 59);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Tag = "101";
-            this.button1.Text = "操作説明";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Stage_Click);
+            this.btnTutorial1.Location = new System.Drawing.Point(26, 59);
+            this.btnTutorial1.Name = "btnTutorial1";
+            this.btnTutorial1.Size = new System.Drawing.Size(75, 23);
+            this.btnTutorial1.TabIndex = 0;
+            this.btnTutorial1.Tag = "101";
+            this.btnTutorial1.Text = "操作説明";
+            this.btnTutorial1.UseVisualStyleBackColor = true;
+            this.btnTutorial1.Click += new System.EventHandler(this.Stage_Click);
             // 
             // label1
             // 
@@ -54,63 +56,61 @@ namespace WinFormBreaker.Scenes {
             this.label1.TabIndex = 1;
             this.label1.Text = "ステージ";
             // 
-            // button2
+            // btnTutorial2
             // 
-            this.button2.Location = new System.Drawing.Point(107, 59);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 0;
-            this.button2.Tag = "102";
-            this.button2.Text = "2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.Stage_Click);
+            this.btnTutorial2.Font = new System.Drawing.Font("MS UI Gothic", 8F);
+            this.btnTutorial2.Location = new System.Drawing.Point(107, 59);
+            this.btnTutorial2.Name = "btnTutorial2";
+            this.btnTutorial2.Size = new System.Drawing.Size(75, 23);
+            this.btnTutorial2.TabIndex = 0;
+            this.btnTutorial2.Tag = "102";
+            this.btnTutorial2.Text = "ブロックの種類";
+            this.btnTutorial2.UseVisualStyleBackColor = true;
+            this.btnTutorial2.Click += new System.EventHandler(this.Stage_Click);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(188, 59);
+            this.button3.Location = new System.Drawing.Point(188, 139);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 0;
-            this.button3.Tag = "103";
+            this.button3.Tag = "3";
             this.button3.Text = "3";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.Stage_Click);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(269, 59);
+            this.button4.Location = new System.Drawing.Point(269, 139);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 0;
-            this.button4.Tag = "104";
+            this.button4.Tag = "4";
             this.button4.Text = "4";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Visible = false;
             this.button4.Click += new System.EventHandler(this.Stage_Click);
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(350, 59);
+            this.button5.Location = new System.Drawing.Point(350, 139);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 0;
-            this.button5.Tag = "105";
+            this.button5.Tag = "5";
             this.button5.Text = "5";
             this.button5.UseVisualStyleBackColor = true;
-            this.button5.Visible = false;
             this.button5.Click += new System.EventHandler(this.Stage_Click);
             // 
             // btnDebug
             // 
-            this.btnDebug.Location = new System.Drawing.Point(350, 595);
+            this.btnDebug.Location = new System.Drawing.Point(350, 542);
             this.btnDebug.Name = "btnDebug";
             this.btnDebug.Size = new System.Drawing.Size(75, 23);
             this.btnDebug.TabIndex = 0;
             this.btnDebug.Tag = "-1";
             this.btnDebug.Text = "デバッグ";
             this.btnDebug.UseVisualStyleBackColor = true;
+            this.btnDebug.Visible = false;
             this.btnDebug.Click += new System.EventHandler(this.Stage_Click);
             // 
             // btnStage1
@@ -120,25 +120,48 @@ namespace WinFormBreaker.Scenes {
             this.btnStage1.Size = new System.Drawing.Size(75, 23);
             this.btnStage1.TabIndex = 0;
             this.btnStage1.Tag = "1";
-            this.btnStage1.Text = "2";
+            this.btnStage1.Text = "1";
             this.btnStage1.UseVisualStyleBackColor = true;
-            this.btnStage1.Visible = false;
             this.btnStage1.Click += new System.EventHandler(this.Stage_Click);
+            // 
+            // btnStage2
+            // 
+            this.btnStage2.Location = new System.Drawing.Point(107, 139);
+            this.btnStage2.Name = "btnStage2";
+            this.btnStage2.Size = new System.Drawing.Size(75, 23);
+            this.btnStage2.TabIndex = 0;
+            this.btnStage2.Tag = "2";
+            this.btnStage2.Text = "2";
+            this.btnStage2.UseVisualStyleBackColor = true;
+            this.btnStage2.Click += new System.EventHandler(this.Stage_Click);
+            // 
+            // btnStage6
+            // 
+            this.btnStage6.Location = new System.Drawing.Point(26, 194);
+            this.btnStage6.Name = "btnStage6";
+            this.btnStage6.Size = new System.Drawing.Size(75, 23);
+            this.btnStage6.TabIndex = 0;
+            this.btnStage6.Tag = "6";
+            this.btnStage6.Text = "6";
+            this.btnStage6.UseVisualStyleBackColor = true;
+            this.btnStage6.Click += new System.EventHandler(this.Stage_Click);
             // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnStage6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
+            this.Controls.Add(this.btnStage2);
             this.Controls.Add(this.btnStage1);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnTutorial2);
             this.Controls.Add(this.btnDebug);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnTutorial1);
             this.Name = "MainMenu";
-            this.Size = new System.Drawing.Size(480, 640);
+            this.Size = new System.Drawing.Size(464, 601);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -146,13 +169,15 @@ namespace WinFormBreaker.Scenes {
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnTutorial1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnTutorial2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button btnDebug;
         private System.Windows.Forms.Button btnStage1;
+        private System.Windows.Forms.Button btnStage2;
+        private System.Windows.Forms.Button btnStage6;
     }
 }

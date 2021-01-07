@@ -12,6 +12,9 @@ namespace WinFormBreaker.Scenes {
     public partial class MainMenu : UserControl {
         public MainMenu() {
             InitializeComponent();
+#if DEBUG
+            this.btnDebug.Show();
+#endif
         }
 
         /// <summary>
